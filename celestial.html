@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Celestial</title>
+        <link rel="stylesheet" type="text/css" href="celestial.css">
+        <script src="matrix.js"></script>
+        <script src="webgl.js"></script>
+        <script src="celestial.js"></script>
+    </head>
+    <body>
+        <div id="loading">
+            <div id="loading-message">
+                <h1 class="loading-title">별빛</h1>
+                <p class="loading-subtitle">Universe in Intuition</p>
+                <noscript>
+                    <p class="loading-message">스크립트를 활성화해야 별빛을 사용할 수 있어요</p>
+                </noscript>
+                <p id="loading-error" class="loading-message" style="display: none;">별빛을 시작하지 못했어요. 브라우저를 업데이트하면 해결될 수도 있어요.</p>
+            </div>
+        </div>
+        <div id="celestial">
+            <div id="left-wing" class="wing">
+                <div class="feather">
+                    <input type="radio" name="cor-system" id="equ-cor" class="cor-choose-radio" onchange="corSysToEqu()">
+                    <input type="radio" name="cor-system" id="hor-cor" class="cor-choose-radio" onchange="corSysToHor()">
+                    <div id="cor-sys-sel">
+                        <label for="equ-cor" id="equ-cor-label" class="cor-choose" style="border-width: 1px 0 1px 1px; border-radius: 10px 0 0 10px;">적도좌표계</label>
+                        <label for="hor-cor" id="hor-cor-label" class="cor-choose" style="border-radius: 0 10px 10px 0;">지평좌표계</label>
+                    </div>
+                </div>
+                <div class="feather">
+                    <span class="data">위도: </span>
+                    <input type="number" class="inline-input" data="coordinate" spellcheck="false" placeholder="Latitude" id="latitude">
+                    <span class="data">&deg;</span>
+                </div>
+                <div class="feather">
+                    <span class="data">경도: </span>
+                    <input type="number" class="inline-input" data="coordinate" spellcheck="false" placeholder="Longitude" id="longitude">
+                    <span class="data">&deg;</span>
+                </div>
+                <div class="feather">
+                    <span class="data">시각: </span>
+                    <input type="time" class="inline-input" data="coordinate" spellcheck="false" placeholder="Longitude">
+                </div>
+                <div class="feather button-set">
+                    <button onclick="enterCoordinateHere()">여기 좌표 입력</button>
+                    <button onclick="updateCoordinate()">이동!</button>
+                </div>
+            </div>
+            <canvas id="univers">
+                <p class="loading-message">이 브라우저가 별빛이 필요로 하는 기능을 제공하지 않아요</p>
+            </canvas>
+            <div id="right-wing" class="wing">
+                
+            </div>
+        </div>
+    </body>
+
+    <script id="vertex-shader-celestial-circle" type="glsl">
+        attribute float vertexId;
+
+        uniform mat4 celestial_position;
+        uniform float numVerts;
+        uniform vec2 resolution;
+        uniform mat4 u_matrix;
+
+        #define PI radians(180.0)
+
+        void main() {
+            float u = vertexId / numVerts;      // goes from 0 to 1
+            float angle = u * 2.0 * PI;         // goes from 0 to 2PI
+            float radius = 0.8;
+        
+            vec2 pos = vec2(cos(angle), sin(angle)) * radius;
+        
+            gl_Position = u_matrix * vec4(pos, 0, 1);
+            gl_PointSize = 5.0;
+        }
+    </script>
+    <script id="fragment-shader-2d" type="glsl">
+        precision mediump float;
+ 
+        uniform vec4 u_color;
+ 
+        void main() {
+            gl_FragColor = u_color;
+        }
+    </script>
+</html>
