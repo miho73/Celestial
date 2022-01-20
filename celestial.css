@@ -13,6 +13,7 @@
 
 * {
     font-family: 'Cafe24Oneprettynight', 'sans-serif';
+    user-select: none;
 }
 
 html, body {
@@ -69,7 +70,7 @@ p.loading-message {
 div#celestial {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: left;
     z-index: 0;
 }
 div.wing {
@@ -82,9 +83,14 @@ div.feather {
 }
 div.button-set {
     display: flex;
+    flex-direction: column;
     gap: 10px;
 }
-span,input,label,button {
+div.button-row {
+    display: flex;
+    gap: 10px;
+}
+p,span,input,label,button {
     color: #ddd;
     font-size: 1.5em;
 }
@@ -129,6 +135,11 @@ input[type="radio"].cor-choose-radio {
 div#cor-sys-sel {
     display: flex;
 }
+svg {
+    fill: #ccc;
+    width: 24px;
+    height: 24px;
+}
 label.cor-choose {
     padding: 6px 10px;
     margin: 0;
@@ -155,4 +166,8 @@ input::-webkit-inner-spin-button {
 }
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+span.float {
+    position: absolute;
 }

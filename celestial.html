@@ -45,16 +45,37 @@
                     <input type="time" class="inline-input" data="coordinate" spellcheck="false" placeholder="Longitude">
                 </div>
                 <div class="feather button-set">
-                    <button onclick="enterCoordinateHere()">여기 좌표 입력</button>
-                    <button onclick="updateCoordinate()">이동!</button>
+                    <div class="button-row">
+                        <button onclick="enterCoordinateHere()" title="이곳 위치 입력">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                            </svg>
+                        </button>
+                        <button onclick="updateCoordinate()" title="좌표로 이동">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M0 9l24-9-8.986 24-3.014-12z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="button-row">
+                        <button onclick="resetRotation()" title="회전 재설정">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0V0z" fill="none"/>
+                                <path d="M7.53 21.48C4.26 19.94 1.92 16.76 1.56 13H.06c.51 6.16 5.66 11 11.95 11l.66-.03-3.81-3.81-1.33 1.32zm.89-6.52c-.19 0-.37-.03-.52-.08-.16-.06-.29-.13-.4-.24-.11-.1-.2-.22-.26-.37-.06-.14-.09-.3-.09-.47h-1.3c0 .36.07.68.21.95.14.27.33.5.56.69.24.18.51.32.82.41.3.1.62.15.96.15.37 0 .72-.05 1.03-.15.32-.1.6-.25.83-.44s.42-.43.55-.72.2-.61.2-.97c0-.19-.02-.38-.07-.56-.05-.18-.12-.35-.23-.51-.1-.16-.24-.3-.4-.43-.17-.13-.37-.23-.61-.31.2-.09.37-.2.52-.33.15-.13.27-.27.37-.42.1-.15.17-.3.22-.46s.07-.32.07-.48c0-.36-.06-.68-.18-.96s-.29-.51-.51-.69c-.2-.19-.47-.33-.77-.43C9.11 8.05 8.77 8 8.4 8c-.36 0-.69.05-1 .16-.3.11-.57.26-.79.45-.21.19-.38.41-.51.67-.12.26-.18.54-.18.85h1.3c0-.17.03-.32.09-.45s.14-.25.25-.34.23-.17.38-.22.3-.08.48-.08c.4 0 .7.1.89.31.19.2.29.49.29.86 0 .18-.03.34-.08.49s-.14.27-.25.37c-.11.1-.25.18-.41.24-.16.06-.36.09-.58.09h-.77v1.03h.77c.22 0 .42.02.6.07s.33.13.45.23c.12.11.22.24.29.4s.1.35.1.57c0 .41-.12.72-.35.93-.23.23-.55.33-.95.33zm8.55-5.92c-.32-.33-.7-.59-1.14-.77-.44-.18-.93-.27-1.47-.27H12v8h2.3c.55 0 1.06-.09 1.51-.27s.84-.43 1.16-.76c.32-.33.57-.73.74-1.19.17-.47.26-.99.26-1.57v-.4c0-.58-.09-1.1-.26-1.57s-.42-.87-.74-1.2zm-.39 3.16c0 .42-.05.79-.14 1.13-.1.33-.24.62-.43.85-.19.23-.43.41-.71.53-.29.12-.62.18-.99.18h-.91V9.12h.97c.72 0 1.27.23 1.64.69.38.46.57 1.12.57 1.99v.4zM12.01 0l-.66.03 3.81 3.81 1.33-1.33c3.27 1.55 5.61 4.72 5.96 8.48h1.5C23.45 4.84 18.3 0 12.01 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="feather">
+                    <p style="color: #fff;">지평선</p>
+                    <p style="color: #ff6565;">천구의 적도</p>
+                    <p style="color: #7dbdf1">자오선</p>
+                    <p style="color: #f6d655">별</p>
                 </div>
             </div>
             <canvas id="univers">
                 <p class="loading-message">이 브라우저가 별빛이 필요로 하는 기능을 제공하지 않아요</p>
             </canvas>
-            <div id="right-wing" class="wing">
-                
-            </div>
         </div>
     </body>
 
@@ -69,14 +90,14 @@
         #define PI radians(180.0)
 
         void main() {
-            float u = vertexId / numVerts;      // goes from 0 to 1
-            float angle = u * 2.0 * PI;         // goes from 0 to 2PI
+            float u = vertexId / numVerts;
+            float angle = u * 2.0 * PI;
             float radius = 0.8;
         
             vec2 pos = vec2(cos(angle), sin(angle)) * radius;
         
             gl_Position = u_matrix * vec4(pos, 0, 1);
-            gl_PointSize = 5.0;
+            gl_PointSize = 7.0;
         }
     </script>
     <script id="fragment-shader-2d" type="glsl">
