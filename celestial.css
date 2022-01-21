@@ -21,6 +21,7 @@ html, body {
     padding: 0;
     background-color: #222;
     overflow: hidden;
+    height: 100%;
 }
 
 body {
@@ -71,6 +72,7 @@ div#celestial {
     width: 100%;
     display: flex;
     justify-content: left;
+    gap: 10px;
     z-index: 0;
 }
 div.wing {
@@ -122,6 +124,12 @@ button {
     -moz-transition: background-color .2s linear;
     -o-transition: background-color .2s linear;
     transition: background-color .2s linear;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
 }
 button:hover {
     background-color: #3f3f3f;
@@ -168,6 +176,34 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+input[type=checkbox] {
+    
+}
+
 span.float {
     position: absolute;
+    width: 150px;
+    opacity: 0;
+}
+
+*.equator {
+    color: #ff6565;
+}
+*.horizon {
+    color: #fff;
+}
+*.meridian {
+    color: #7dbdf1
+}
+*.star {
+    color: #f6d655
+}
+
+div#verse {
+    position: relative;
+}
+div#univers-text, canvas#univers {
+    position: absolute;
+    top: 0;
+    left: 0;
 }

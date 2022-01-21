@@ -39,6 +39,16 @@ function createProgram(gl, vertexShader, fragmentShader) {
     throw 'Cannot create WebGL program';
 }
 
+function setTextLocation(gl, id, location) {
+    if(gei(id).style.opacity == 0) {
+        gei(id).style.opacity = 1;
+    }
+    gei(id).style.left = ((location[0]*0.5+0.5)*gl.canvas.width)+'px';
+    gei(id).style.top = ((location[1]*(-0.5)+0.5)*gl.canvas.height)+'px';
+}
+function hideText(id) {
+    gei(id).style.opacity = 0;
+}
 /*******************************/
 
 var gl;
@@ -64,6 +74,11 @@ var scale = [1, 1, 1]
 const numVerts = 200;
 
 var setCoordinate = false;
+
+var showHorizon;
+var showEquator;
+var showMeridian;
+var showStar;
 
 function webGLStart() {
     var canvas = gei('univers');
@@ -160,19 +175,53 @@ function drawScene() {
     matrix = m4.zRotate(matrix, rotation[2]);
     
     matrix = m4.xRotate(matrix, PI2);
-    drawCircle(matrix, [1,1,1,1]); // 지평선
-    drawLine(matrix, [1, 1, 1, 1]); // 북점 - 남점
-
-    if(setCoordinate) {
-        drawCircle(m4.yRotate(matrix, degToRad(90-latitude)), RED); // 천구의 적도
-        drawLine(m4.yRotate(matrix, degToRad(90-latitude)), RED); // 하지점 - 동지점
-        drawLine(m4.zRotate(matrix, PI2), RED); // 춘분점 - 추분점
-        drawLine(m4.yRotate(matrix, degToRad(180-latitude)), RED); // 천구의 북극 - 천구의 남극
-        drawCircle(m4.xRotate(matrix, PI2), SKY_BLUE); // 자오선
-        
-        drawPoint(m4.yRotate(matrix, degToRad(180-latitude)), YELLOW); // 북극성
+    if(showHorizon) {
+        drawCircle(matrix, [1,1,1,1]); // 지평선
+        drawLine(matrix, [1, 1, 1, 1]); // 북점 - 남점
+        drawLine(m4.yRotate(matrix, PI2), [1, 1, 1, 1]); // 천정 - 천저
+        setTextLocation(gl, 'zenith', m4.scale(m4.yRotate(matrix, PI2), 0.8, 0.8, 1)); // 천정
+        setTextLocation(gl, 'nadir', m4.scale(m4.yRotate(matrix, -PI2), 0.8, 0.8, 1)); // 천저
     }
     else {
-        drawLine(m4.zRotate(matrix, PI2), WHITE); // 춘분점 - 추분점
+        hideText('zenith');
+        hideText('nadir');
+    }
+
+    if(setCoordinate) {
+        if(showMeridian) {
+            drawCircle(m4.xRotate(matrix, PI2), SKY_BLUE); // 자오선
+        }
+        if(showEquator) {
+            equatorMatrixRight = m4.yRotate(matrix, degToRad(180-latitude));
+            equatorMatrix = m4.yRotate(matrix, degToRad(90-latitude));
+
+            drawCircle(equatorMatrix, RED); // 천구의 적도
+            drawLine(equatorMatrix, RED); // 하지점 - 동지점
+            setTextLocation(gl, 'vernal-equinox', m4.scale(m4.zRotate(equatorMatrix, PI2), 0.8, 0.8, 1)); // 춘분점
+            setTextLocation(gl, 'summer-solstice', m4.scale(equatorMatrix, 0.8, 0.8, 1)); // 하지점
+            setTextLocation(gl, 'autumnal-equinox', m4.scale(m4.zRotate(equatorMatrix, -PI2), 0.8, 0.8, 1)); // 추분점
+            setTextLocation(gl, 'winter-solstice', m4.scale(m4.zRotate(equatorMatrix, PI), 0.8, 0.5, 1)); // 동지점
+            drawLine(m4.zRotate(matrix, PI2), RED); // 춘분점 - 추분점
+            drawLine(equatorMatrixRight, RED); // 천구의 북극 - 천구의 남극
+
+            setTextLocation(gl, 'celestial-npole', m4.scale(equatorMatrixRight, 0.8, 0.8, 1)); // 천구의 북극
+            setTextLocation(gl, 'celestial-spole', m4.scale(m4.zRotate(equatorMatrixRight, PI), 0.8, 0.8, 1)); // 천구의 남극
+        }
+        else {
+            hideText('vernal-equinox');
+            hideText('summer-solstice');
+            hideText('autumnal-equinox');
+            hideText('winter-solstice');
+            hideText('celestial-npole');
+            hideText('celestial-spole');
+            if(showHorizon) {
+                drawLine(m4.zRotate(matrix, PI2), WHITE); // 동점 - 서점
+            }
+        }
+    }
+    else {
+        if(showHorizon) {
+            drawLine(m4.zRotate(matrix, PI2), WHITE); // 동점 - 서점
+        }
     }
 }
