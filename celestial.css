@@ -180,6 +180,10 @@ input[type=checkbox] {
     
 }
 
+input[type=datetime-local] {
+    width: fit-content;
+}
+
 span.float {
     position: absolute;
     width: 150px;

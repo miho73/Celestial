@@ -2,6 +2,13 @@ const PI = Math.PI;
 const PI2 = PI/2;
 const PI4 = PI/4;
 
+const AXIAL_TILT = 0.4101524;
+
+const SPRING_EQUINOX  = 80;  // March 21st
+const SUMMER_SOLSTICE = 172; // June 21st
+const AUTUMN_EQUINOX  = 266; // September 23rd
+const WINTER_SOLSTICE = 356; // December 22nd
+
 function degToRad(deg) {
     return PI * deg / 180;
 }
@@ -74,6 +81,7 @@ var scale = [1, 1, 1]
 const numVerts = 200;
 
 var setCoordinate = false;
+var setDatetime = false;
 
 var showHorizon;
 var showEquator;
@@ -223,5 +231,9 @@ function drawScene() {
         if(showHorizon) {
             drawLine(m4.zRotate(matrix, PI2), WHITE); // 동점 - 서점
         }
+    }
+
+    if(setDatetime) {
+        
     }
 }

@@ -2,6 +2,15 @@ function gei(id) {
     return document.getElementById(id);
 }
 
+function getDayOfYear(date) {
+    var start = new Date(date.getFullYear(), 0, 0);
+    var diff = date - start;
+    var oneDay = 1000 * 60 * 60 * 24;
+    var day = Math.floor(diff / oneDay);
+    return day;
+}
+/***********************************************/
+
 var configJson;
 
 function saveConfig() {
@@ -60,10 +69,18 @@ window.addEventListener("load", function() {
             prevMouseLocation = [event.pageX, event.pageY];
             mouseDown = true;
         });
+        window.addEventListener("touchstart", function(event) {
+            prevMouseLocation = [event.pageX, event.pageY];
+            mouseDown = true;
+	    });
         window.addEventListener("mouseup", function() {
             prevMouseLocation = []
             mouseDown = false;
         });
+        window.addEventListener("touchend", function(event) {
+            prevMouseLocation = [];
+	        mouseDown = false;
+	    });
         window.addEventListener("mousemove", function(event) {
             if(mouseDown) {
                 rotation = [
@@ -73,6 +90,17 @@ window.addEventListener("load", function() {
                 ];
                 prevMouseLocation = [event.pageX, event.pageY]
                 drawScene();
+            }
+        });
+        window.addEventListener("touchmove", function(event) {
+            if(mouseDown) {
+               rotation = [
+                   rotation[0] + (sensitivity*(PI*(event.pageY-prevMouseLocation[1])/this.window.innerHeight)),
+                   rotation[1] + (sensitivity*(PI*(event.pageX-prevMouseLocation[0])/this.window.innerWidth)),
+                   rotation[2]
+               ];
+               prevMouseLocation = [event.pageX, event.pageY]
+               drawScene();
             }
         });
 
@@ -101,6 +129,23 @@ function updateCoordinate() {
     saveConfig();
     setCoordinate = true;
     drawScene();
+}
+function updateDatetime() {
+    datetimeTxt = gei('datetime').value;
+    date = new Date(datetimeTxt);
+    dayOfYear = getDayOfYear(date);
+    if(dayOfYear < SPRING_EQUINOX || WINTER_SOLSTICE <= dayOfYear) {
+        console.log("SPRING");
+    }
+    else if(dayOfYear < SUMMER_SOLSTICE) {
+        console.log("SUMMER");
+    }
+    else if(dayOfYear < AUTUMN_EQUINOX) {
+        console.log("AUTUMN");
+    }
+    else if(dayOfYear < WINTER_SOLSTICE) {
+        console.log("WINTER");
+    }
 }
 
 function enterCoordinateHere() {
