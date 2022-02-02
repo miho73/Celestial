@@ -18,5 +18,5 @@ jobs:
           username: ${{ secrets.FTP_USER_NAME }}
           password: ${{ secrets.FTP_USER_PASSWORD }}
           protocol: ftps
-          local-dir: .
+          local-dir: ./
           server-dir: ./celestial/
