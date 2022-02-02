@@ -28,9 +28,11 @@ window.addEventListener("load", function() {
                         horizon: true,
                         equator: true,
                         meridian: true,
-                        star: true
+                        star: true,
+                        sun: true
                     },
-                    coordinate: [-1, -1]
+                    coordinate: [-1, -1],
+                    datetime: ''
                 }
             ));
             config = this.localStorage.getItem('config');
@@ -40,15 +42,23 @@ window.addEventListener("load", function() {
         gei('enable-equator').checked = configJson.view.equator;
         gei('enable-meridian').checked = configJson.view.meridian;
         gei('enable-star').checked = configJson.view.star;
+        gei('enable-sun').checked = configJson.view.sun;
         if(configJson.coordinate[0] != -1 && configJson.coordinate[1] != -1) {
             latitude = gei('latitude').value = configJson.coordinate[0];
             longitude = gei('longitude').value = configJson.coordinate[1];
             setCoordinate = true;
         }
+        if(configJson.datetime != '') {
+            gei('datetime').value = configJson.datetime;
+            date = new Date(configJson.datetime);
+            secOfDay = date.getSeconds() + 60 * (date.getMinutes() + 60 * date.getHours());
+            setDatetime = true;
+        }
         showHorizon = configJson.view.horizon;
         showEquator = configJson.view.equator;
         showMeridian = configJson.view.meridian;
         showStar = configJson.view.star;
+        showSun = configJson.view.sun;
 
         // Init WebGL
         sq = Math.min(this.window.innerWidth, this.window.innerHeight);
@@ -132,6 +142,9 @@ function updateCoordinate() {
 }
 function updateDatetime() {
     datetimeTxt = gei('datetime').value;
+    configJson.datetime = datetimeTxt;
+    saveConfig();
+
     date = new Date(datetimeTxt);
     dayOfYear = getDayOfYear(date);
     if(dayOfYear < SPRING_EQUINOX || WINTER_SOLSTICE <= dayOfYear) {
@@ -146,6 +159,8 @@ function updateDatetime() {
     else if(dayOfYear < WINTER_SOLSTICE) {
         console.log("WINTER");
     }
+    secOfDay = date.getSeconds() + 60 * (date.getMinutes() + 60 * date.getHours());
+    setDatetime = true;
 }
 
 function enterCoordinateHere() {
@@ -198,6 +213,10 @@ function configCheckboxChange(config) {
         case 'view.star':
             showStar = gei('enable-star').checked;
             configJson.view.star = showStar;
+            break;
+        case 'view.sun':
+            showSun = gei('enable-sun').checked;
+            configJson.view.sun = showSun;
             break;
         default:
             throw 'Config '+config+' was not found.';

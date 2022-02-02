@@ -21,6 +21,7 @@ html, body {
     padding: 0;
     background-color: #222;
     overflow: hidden;
+    width: 100%;
     height: 100%;
 }
 
@@ -70,18 +71,29 @@ p.loading-message {
 
 div#celestial {
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: left;
     gap: 10px;
     z-index: 0;
 }
 div.wing {
-    padding: 20px;
+    width: fit-content;
+    height: 100%;
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+*.wing-top {
+    margin-top: 20px !important;
+}
+*.wing-bottom {
+    margin-bottom: 20px !important;
 }
 div.feather {
-    margin-bottom: 15px;
+    margin: 8px 0;
 }
 div.button-set {
     display: flex;
@@ -91,6 +103,12 @@ div.button-set {
 div.button-row {
     display: flex;
     gap: 10px;
+}
+hr {
+    width: 100%;
+    border-width: 1px;
+    color: #ddd;
+    margin: 0;
 }
 p,span,input,label,button {
     color: #ddd;
@@ -202,6 +220,9 @@ span.float {
 *.star {
     color: #f6d655
 }
+*.sun {
+    color: #ffa914;
+}
 
 div#verse {
     position: relative;
@@ -210,4 +231,26 @@ div#univers-text, canvas#univers {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+@media (orientation: portrait) {
+    div#loading {
+        display: block !important;
+        opacity: 1 !important;
+    }
+    p#portrait-warning {
+        display: block !important;
+    }
+}
+
+@media screen and (min-width: 700px) {
+    h1.loading-title {
+        font-size: 6em;
+    }
+    p.loading-subtitle {
+        font-size: 4em;
+    }
+    p.loading-message {
+        font-size: 2em;
+    }
 }

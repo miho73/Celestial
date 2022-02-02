@@ -9,8 +9,17 @@ const SUMMER_SOLSTICE = 172; // June 21st
 const AUTUMN_EQUINOX  = 266; // September 23rd
 const WINTER_SOLSTICE = 356; // December 22nd
 
+const CELESTIAL_RADIUS = 0.8;
+
 function degToRad(deg) {
     return PI * deg / 180;
+}
+
+function sin(rad) {
+    return Math.sin(rad);
+}
+function cos(rad) {
+    return Math.cos(rad);
 }
 
 /*******************************/
@@ -50,8 +59,20 @@ function setTextLocation(gl, id, location) {
     if(gei(id).style.opacity == 0) {
         gei(id).style.opacity = 1;
     }
-    gei(id).style.left = ((location[0]*0.5+0.5)*gl.canvas.width)+'px';
-    gei(id).style.top = ((location[1]*(-0.5)+0.5)*gl.canvas.height)+'px';
+    gei(id).style.left = (
+        (
+            (
+                location[0]
+            ) * 0.5 + 0.5
+        ) * gl.canvas.width
+    ) + 'px';
+    gei(id).style.top = (
+        (
+            (
+                location[1]
+            ) * (-0.5) + 0.5
+        ) * gl.canvas.height
+    ) + 'px';
 }
 function hideText(id) {
     gei(id).style.opacity = 0;
@@ -78,15 +99,20 @@ var translation = [0, 0, 0]
 var rotation = defaultRotation;
 var scale = [1, 1, 1]
 
-const numVerts = 200;
+const numVerts = 100;
 
 var setCoordinate = false;
-var setDatetime = false;
+var setDatetime = true;
+
+// TODO: Change dynamic
+var sunDiurnalCircleAngle = AXIAL_TILT;
+var secOfDay;
 
 var showHorizon;
 var showEquator;
 var showMeridian;
 var showStar;
+var showSun;
 
 function webGLStart() {
     var canvas = gei('univers');
@@ -157,6 +183,7 @@ WHITE = [1, 1, 1, 1];
 RED = [1, 0.396, 0.396, 1];
 YELLOW = [0.965,0.839,0.333, 1];
 SKY_BLUE = [0.49,0.741,0.945, 1];
+SUN = [1, 0.663, 0.078, 1]
 
 function drawScene() {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -196,13 +223,13 @@ function drawScene() {
     }
 
     if(setCoordinate) {
+        equatorMatrixRight = m4.yRotate(matrix, degToRad(180-latitude));
+        equatorMatrix = m4.yRotate(matrix, degToRad(90-latitude));
+
         if(showMeridian) {
             drawCircle(m4.xRotate(matrix, PI2), SKY_BLUE); // 자오선
         }
         if(showEquator) {
-            equatorMatrixRight = m4.yRotate(matrix, degToRad(180-latitude));
-            equatorMatrix = m4.yRotate(matrix, degToRad(90-latitude));
-
             drawCircle(equatorMatrix, RED); // 천구의 적도
             drawLine(equatorMatrix, RED); // 하지점 - 동지점
             setTextLocation(gl, 'vernal-equinox', m4.scale(m4.zRotate(equatorMatrix, PI2), 0.8, 0.8, 1)); // 춘분점
@@ -226,14 +253,28 @@ function drawScene() {
                 drawLine(m4.zRotate(matrix, PI2), WHITE); // 동점 - 서점
             }
         }
+        if(showSun) {
+            sunDiurnalCircleMatrix = m4.scale(
+                m4.translate(
+                    equatorMatrix,
+                    0,
+                    0,
+                    sin(-sunDiurnalCircleAngle) * CELESTIAL_RADIUS
+                ),
+                cos(-sunDiurnalCircleAngle),
+                cos(-sunDiurnalCircleAngle),
+                1
+            );
+            drawCircle(sunDiurnalCircleMatrix, SUN); // 태양의 일주권
+            if(setDatetime) {
+                sunMatrix = m4.zRotate(sunDiurnalCircleMatrix, (secOfDay/43200)*PI+PI);
+                drawPoint(sunMatrix, SUN); // 태양
+            }
+        }
     }
     else {
         if(showHorizon) {
             drawLine(m4.zRotate(matrix, PI2), WHITE); // 동점 - 서점
         }
-    }
-
-    if(setDatetime) {
-        
     }
 }
